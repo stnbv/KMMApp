@@ -21,20 +21,47 @@ kotlin {
             baseName = "shared"
         }
     }
-    
+
+    val ktorVersion = "2.1.1"
+    val coroutinesVersion = "1.4.2-native-mt"
+    val serializationVersion = "1.3.3"
+    val sqlDelightVersion = "1.4.4"
+
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("com.facebook.android:facebook-login:latest.release")
+
+                // HTTP
+                implementation("io.ktor:ktor-client-core:${ktorVersion}")
+                implementation("io.ktor:ktor-client-json:${ktorVersion}")
+                implementation("io.ktor:ktor-client-serialization:${ktorVersion}")
+                implementation("io.ktor:ktor-client-logging:$ktorVersion")
+
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("com.google.android.material:material:1.6.1")
+                api("io.ktor:ktor-client-okhttp:${ktorVersion}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${coroutinesVersion}")
+                api("com.squareup.sqldelight:android-driver:${sqlDelightVersion}")
+            }
+        }
         val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
         val iosMain by creating {
+            dependencies {
+                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+            }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
