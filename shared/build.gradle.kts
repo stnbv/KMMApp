@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id("com.squareup.sqldelight")
 }
 
 version = "1.0"
@@ -25,7 +26,7 @@ kotlin {
     val ktorVersion = "2.1.1"
     val coroutinesVersion = "1.4.2-native-mt"
     val serializationVersion = "1.3.3"
-    val sqlDelightVersion = "1.4.4"
+    val sqlDelightVersion = "1.5.3"
 
     sourceSets {
         val commonMain by getting {
@@ -39,6 +40,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-serialization:${ktorVersion}")
                 implementation("io.ktor:ktor-client-logging:$ktorVersion")
 
+                //SQLDelight
+                implementation("com.squareup.sqldelight:runtime:$sqlDelightVersion")
             }
         }
         val commonTest by getting {
@@ -51,8 +54,7 @@ kotlin {
                 implementation("com.google.android.material:material:1.6.1")
                 api("io.ktor:ktor-client-okhttp:${ktorVersion}")
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-android:${coroutinesVersion}")
-                api("com.squareup.sqldelight:android-driver:${sqlDelightVersion}")
-            }
+                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")            }
         }
         val androidTest by getting
         val iosX64Main by getting
@@ -61,6 +63,7 @@ kotlin {
         val iosMain by creating {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
             }
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
@@ -87,3 +90,10 @@ android {
         targetSdk = 32
     }
 }
+
+sqldelight {
+    database("AppDatabase") {
+        packageName = "com.example.db"
+    }
+}
+
